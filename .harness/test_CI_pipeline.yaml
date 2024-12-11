@@ -1,0 +1,38 @@
+pipeline:
+  name: test CI pipeline
+  identifier: test_CI_pipeline
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: CI_pipeline_github_connector
+        build: <+input>
+  stages:
+    - stage:
+        name: Build image
+        identifier: Build_image
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: k8s_connector
+              namespace: harness-delegate-ng
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: BuildAndPushDockerRegistry
+                  name: BuildAndPushDockerRegistry_1
+                  identifier: BuildAndPushDockerRegistry_1
+                  spec:
+                    connectorRef: docker_connector
+                    repo: https://hub.docker.com/?_gl=1*gh9oov*_ga*MTU4OTkxNzYwNS4xNzMzODgwNzAw*_ga_XJWPQMJYHQ*MTczMzk1NzY0MS4yLjEuMTczMzk1ODE3MC42MC4wLjA.
+                    tags:
+                      - first
